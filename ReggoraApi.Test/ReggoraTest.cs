@@ -7,7 +7,6 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Reflection;
 using System.Text;
-using Reggora.Api.Requests.Lender.Products;
 
 namespace ReggoraLenderApi.Test
 {
@@ -50,9 +49,13 @@ namespace ReggoraLenderApi.Test
         }
 
         // Test Loan Requests
-        public string CreateLoan()
+        public string CreateLoan(bool refresh = false)
         {
-            if (SampleObjects._loan != null) { return SampleObjects._loan.Id; }
+            if (!refresh && SampleObjects._loan != null)
+            {
+                SampleObjects._loan = lender.Loans.Get(SampleObjects._loan.Id);
+                return SampleObjects._loan.Id;
+            }
             Loan loan = new Loan()
             {
                 Number = RandomString(7, false),
@@ -140,18 +143,22 @@ namespace ReggoraLenderApi.Test
         }
 
         // Test Order Requests
-        public string CreateOrder()
+        public string CreateOrder(bool refresh = false)
         {
-            CreateLoan();
-            CreateProduct();
-            if (SampleObjects._order != null) { return SampleObjects._order.Id; }
+            string loanId = CreateLoan(true);
+            string productId = CreateProduct(true);
+            if (!refresh && SampleObjects._order != null)
+            {
+                SampleObjects._order = lender.Orders.Get(SampleObjects._order.Id);
+                return SampleObjects._order.Id;
+            }
             
             List<string> products = new List<string>();
-            products.Add(SampleObjects._product.Id);
+            products.Add(productId);
             Order order = new Order()
             {
                 Allocation = Order.AllocationMode.Automatic,
-                Loan = SampleObjects._loan.Id,
+                Loan = loanId,
                 Priority = Order.PriorityType.Normal,
                 ProductIds = products,
                 Due = DateTime.Now.AddYears(1)
@@ -216,7 +223,45 @@ namespace ReggoraLenderApi.Test
         }
 
         [TestMethod]
-        public void BE_TestCancelOrder()
+        public void BE_TestPlaceOrderOnHold()
+        {
+            string orderId = CreateOrder() ?? "5d5bc544586cbb000f5e171f";
+            string reason = "I'd like to wait to start this order.";
+            string response = lender.Orders.OnHold(orderId, reason);
+            Assert.IsNotNull(response, String.Format("Expected Success message of Placing Order On Hold, Actual: {0}", response));
+
+        }
+
+        [TestMethod]
+        public void BF_RemoveOrderHold()
+        {
+            string orderId = CreateOrder() ?? "5d5bc544586cbb000f5e171f";
+            string response = lender.Orders.RemoveHold(orderId);
+            Assert.IsNotNull(response, String.Format("Expected Success message of Removing Order Hold, Actual: {0}", response));
+
+        }
+
+        [TestMethod]
+        public void BG_TestGetSubmissions()
+        {
+            string orderId = CreateOrder() ?? "5d5bc544586cbb000f5e171f";
+            var submissions = lender.Orders.Submissions(orderId);
+            Assert.IsInstanceOfType(submissions, typeof(List<Submission>));
+        }
+
+        [TestMethod]
+        public void BH_TestDownloadSubmissionDoc()
+        {
+            string orderId = "5d38b049a27621000abd28ed";
+            uint version = 1;
+            string reportType = "pdf_report";
+            string downloadPath = null;
+            bool response = lender.Orders.DownloadSubmissionDoc(orderId, version, reportType, downloadPath);
+            Assert.IsTrue(response);
+        }
+
+        [TestMethod]
+        public void BI_TestCancelOrder()
         {
             string cancelId = CreateOrder() ?? "5d5bc544586cbb000f5e171f";
             string response = lender.Orders.Cancel(cancelId);
@@ -225,39 +270,14 @@ namespace ReggoraLenderApi.Test
 
         }
 
-        [TestMethod]
-        public void BF_TestPlaceOrderOnHold()
-        {
-            string orderId = CreateOrder() ?? "5d5bc544586cbb000f5e171f";
-            string reason = "I'd like to wait to start this order.";
-            string response = lender.Orders.OnHold(orderId, reason);
-            SampleObjects._order = null;
-            Assert.IsNotNull(response, String.Format("Expected Success message of Placing Order On Hold, Actual: {0}", response));
-
-        }
-
-        [TestMethod]
-        public void BG_RemoveOrderHold()
-        {
-            string orderId = CreateOrder() ?? "5d5bc544586cbb000f5e171f";
-            string response = lender.Orders.RemoveHold(orderId);
-            SampleObjects._order = null;
-            Assert.IsNotNull(response, String.Format("Expected Success message of Removing Order Hold, Actual: {0}", response));
-
-        }
-
-        [TestMethod]
-        public void BH_TestGetSubmissions()
-        {
-            string orderId = CreateOrder() ?? "5d5bc544586cbb000f5e171f";
-            var submissions = lender.Orders.Submissions(orderId);
-            Assert.IsInstanceOfType(submissions, typeof(List<Submission>));
-        }
-
         //Test Product Requests
-        public string CreateProduct()
+        public string CreateProduct(bool refresh = false)
         {
-            if (SampleObjects._product != null) { return SampleObjects._product.Id; }
+            if (!refresh && SampleObjects._product != null)
+            {
+                SampleObjects._product = lender.Products.Get(SampleObjects._product.Id);
+                return SampleObjects._product.Id;
+            }
             Product product = new Product()
             {
                 ProductName = "Full Appraisal" + RandomString(3, true),
@@ -318,7 +338,7 @@ namespace ReggoraLenderApi.Test
                 SampleObjects._product = testProduct;
                 Assert.AreEqual(testProduct.ProductName, newProductName, String.Format("Expected Product Name:'{0}'; Actual Product Name: {1}",
                                      newProductName, testProduct.ProductName));
-                
+
             }
             catch (Exception e)
             {
@@ -339,7 +359,11 @@ namespace ReggoraLenderApi.Test
         // Test User Requests
         public string CreateUser()
         {
-            if (SampleObjects._user != null) { return SampleObjects._user.Id; }
+            if (SampleObjects._user != null)
+            {
+                SampleObjects._user = lender.Users.Get(SampleObjects._user.Id);
+                return SampleObjects._user.Id;
+            }
             User user = new User()
             {
                 Email = RandomString(4, true) + "@test.com",

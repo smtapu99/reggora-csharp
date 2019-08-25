@@ -4,6 +4,7 @@
 
 using Reggora.Api.Requests.Lender.Evaults;
 using Reggora.Api.Requests.Lender.Orders;
+using Reggora.Api.Requests.Vendor.Order;
 using System;
 using System.Collections.Generic;
 
@@ -67,7 +68,6 @@ namespace Reggora.Api.Entity
             Automatic,
             Manual,
         }
-
 
         public string Id { get => _id.Value; set => _id.Value = value; }
         public string Status { get => _status.Value; set => _status.Value = value; }
@@ -173,7 +173,6 @@ namespace Reggora.Api.Entity
         }
 
     }
-
     public class Submission : Entity
     {
        
@@ -432,6 +431,72 @@ namespace Reggora.Api.Entity
         {
             BuildField(ref _id, "id");
             BuildField(ref _documents, "documents");
+        }
+    }
+
+    public class VendorOrder : Entity
+    {
+        
+        public string Id { get => _id.Value; set => _id.Value = value; }
+        public string Status { get => _status.Value; set => _status.Value = value; }
+        public string PropertyStreet { get => _propertyStreet.Value; set => _propertyStreet.Value = value; }
+        public string PropertyCity { get => _propertyCity.Value; set => _propertyCity.Value = value; }
+        public string PropertyState { get => _propertyState.Value; set => _propertyState.Value = value; }
+        public string PropertyZip { get => _propertyZip.Value; set => _propertyZip.Value = value; }
+        public string Priority { get => _priority.Value; set => _priority.Value = value; }
+        public string RequestExpiration { get => _requestExpiration.Value; set => _requestExpiration.Value = value; }
+        public string DueDate { get => _dueDate.Value; set => _dueDate.Value = value; }
+        public GetVendorOrderRequest.Response.Order.Lendr lender { get => _lender.Value; set => _lender.Value = value; }
+        public GetVendorOrderRequest.Response.Order.Loan LoanFile { get => _loanFile.Value; set => _loanFile.Value = value; }
+        public List<GetVendorOrderRequest.Response.Order.Consumer> Consumers { get => _consumers.Value; set => _consumers.Value = value; }
+        public List<GetVendorOrderRequest.Response.Order.Schdl> Schedule { get => _schedule.Value; set => _schedule.Value = value; }
+        public string Evault { get => _evault.Value; set => _evault.Value = value; }
+        public string Conversation { get => _conversation.Value; set => _conversation.Value = value; }
+        public List<GetVendorOrderRequest.Response.Order.Product> Products { get => _products.Value; set => _products.Value = value; }
+        public List<GetVendorOrderRequest.Response.Order.Submission> Submissions { get => _submissions.Value; set => _submissions.Value = value; }
+        public List<GetVendorOrderRequest.Response.Order.Revision> Revisions { get => _revisions.Value; set => _revisions.Value = value; }
+
+        private readonly EntityField<string> _id;
+        private readonly EntityField<string> _status;
+        private readonly EntityField<string> _propertyStreet;
+        private readonly EntityField<string> _propertyCity;
+        private readonly EntityField<string> _propertyState;
+        private readonly EntityField<string> _propertyZip;
+        private readonly EntityField<string> _priority;
+        private readonly EntityField<string> _requestExpiration;
+        private readonly EntityField<string> _dueDate;
+
+        private readonly EntityField<GetVendorOrderRequest.Response.Order.Lendr> _lender;
+        private readonly EntityField<GetVendorOrderRequest.Response.Order.Loan> _loanFile;
+        private readonly EntityField<List<GetVendorOrderRequest.Response.Order.Consumer>> _consumers;
+        private readonly EntityField<List<GetVendorOrderRequest.Response.Order.Schdl>> _schedule;
+        private readonly EntityField<List<GetVendorOrderRequest.Response.Order.Product>> _products;
+        private readonly EntityField<List<GetVendorOrderRequest.Response.Order.Submission>> _submissions;
+        private readonly EntityField<List<GetVendorOrderRequest.Response.Order.Revision>> _revisions;
+
+        private readonly EntityField<string> _evault;
+        private readonly EntityField<string> _conversation;
+
+        public VendorOrder()
+        {
+            BuildField(ref _id, "id");
+            BuildField(ref _status, "status");
+            BuildField(ref _propertyStreet, "property_street");
+            BuildField(ref _propertyCity, "property_city");
+            BuildField(ref _propertyState, "property_state");
+            BuildField(ref _propertyZip, "property_zip");
+            BuildField(ref _priority, "priority");
+            BuildField(ref _requestExpiration, "request_expiration");
+            BuildField(ref _dueDate, "due_date");
+            BuildField(ref _lender, "lender");
+            BuildField(ref _loanFile, "loan_file");
+            BuildField(ref _consumers, "consumers");
+            BuildField(ref _schedule, "schedule");
+            BuildField(ref _products, "products");
+            BuildField(ref _submissions, "submissions");
+            BuildField(ref _revisions, "revisions");
+            BuildField(ref _evault, "evault");
+            BuildField(ref _conversation, "conversation");
         }
     }
 }
