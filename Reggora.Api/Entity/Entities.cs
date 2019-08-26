@@ -4,6 +4,7 @@
 
 using Reggora.Api.Requests.Lender.Evaults;
 using Reggora.Api.Requests.Lender.Orders;
+using Reggora.Api.Requests.Vendor.Conversation;
 using Reggora.Api.Requests.Vendor.Order;
 using System;
 using System.Collections.Generic;
@@ -497,6 +498,43 @@ namespace Reggora.Api.Entity
             BuildField(ref _revisions, "revisions");
             BuildField(ref _evault, "evault");
             BuildField(ref _conversation, "conversation");
+        }
+    }
+
+    public class Conversation : Entity
+    {
+        public string Id { get => _id.Value; set => _id.Value = value; }
+        public List<GetConversationRequest.Response.Conversation.User> VendorUsers { get => _vendorUsers.Value; set => _vendorUsers.Value = value; }
+        public List<GetConversationRequest.Response.Conversation.User> LenderUsers { get => _lenderUsers.Value; set => _lenderUsers.Value = value; }
+        public List<GetConversationRequest.Response.Conversation.Msg> Messages { get => _messages.Value; set => _messages.Value = value; }
+
+        private readonly EntityField<string> _id;
+        private readonly EntityField<List<GetConversationRequest.Response.Conversation.User>> _vendorUsers;
+        private readonly EntityField<List<GetConversationRequest.Response.Conversation.User>> _lenderUsers;
+        private readonly EntityField<List<GetConversationRequest.Response.Conversation.Msg>> _messages;
+
+        public Conversation()
+        {
+            BuildField(ref _id, "id");
+            BuildField(ref _vendorUsers, "vendor_users");
+            BuildField(ref _lenderUsers, "lender_users");
+            BuildField(ref _messages, "messages");
+        }
+
+    }
+
+    public class VendorEvault : Entity
+    {
+        public string Id { get => _id.Value; set => _id.Value = value; }
+        public List<GetEvaultRequest.Response.Evlt.Document> Documents { get => _documents.Value; set => _documents.Value = value; }
+
+        private readonly EntityField<string> _id;
+        private readonly EntityField<List<GetEvaultRequest.Response.Evlt.Document>> _documents;
+
+        public VendorEvault()
+        {
+            BuildField(ref _id, "id");
+            BuildField(ref _documents, "documents");
         }
     }
 }

@@ -194,7 +194,7 @@ namespace ReggoraLenderApi.Test
         [TestMethod]
         public void BC_TestGetOrder()
         {
-            Console.WriteLine("Testing Get a Loan...");
+            Console.WriteLine("Testing Get a Order...");
             string expectedId = CreateOrder() ?? "5d5bc544586cbb000f5e171f";
             Order order = lender.Orders.Get(expectedId);
             Assert.AreEqual(expectedId, order.Id, String.Format("Tried to get order by ID:'{0}'; Actual ID of order: {1}",

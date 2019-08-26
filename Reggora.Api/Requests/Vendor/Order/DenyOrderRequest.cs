@@ -1,13 +1,12 @@
-using System.Collections.Generic;
 using Newtonsoft.Json;
 using RestSharp;
 
 
 namespace Reggora.Api.Requests.Vendor.Order
 {
-    public class DenyOfferRequest : ReggoraRequest
+    public class DenyOrderRequest : ReggoraRequest
     {
-        public DenyOfferRequest(string orderId, string denyReason) : base("vendor/order/{order_id}/deny", Method.PUT)
+        public DenyOrderRequest(string orderId, string denyReason) : base("vendor/order/{order_id}/deny", Method.PUT)
         {
             AddParameter("order_id", orderId, ParameterType.UrlSegment);
 

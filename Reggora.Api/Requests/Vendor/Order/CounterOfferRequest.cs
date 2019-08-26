@@ -26,7 +26,7 @@ namespace Reggora.Api.Requests.Vendor.Order
             public string DueDate { get; set; }
 
             [JsonProperty("fee")]
-            public float Fee { get; set; }
+            public float? Fee { get; set; }
         }
     }
 }

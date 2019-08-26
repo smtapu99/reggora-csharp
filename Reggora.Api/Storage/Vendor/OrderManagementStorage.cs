@@ -5,11 +5,10 @@ using Syroot.Windows.IO;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace Reggora.Api.Storage.Vendor
 {
-    class OrderManagementStorage : Storage<VendorOrder, Api.Vendor>
+    public class OrderManagementStorage : Storage<VendorOrder, Api.Vendor>
     {
         public OrderManagementStorage(Api.Vendor api) : base(api)
         {
@@ -76,10 +75,10 @@ namespace Reggora.Api.Storage.Vendor
             return response;
         }
 
-        public string DenyOffer(string orderId, string denyReason = null)
+        public string DenyOrder(string orderId, string denyReason = null)
         {
             string response = "";
-            var result = new DenyOfferRequest(orderId, denyReason).Execute(Api.Client);
+            var result = new DenyOrderRequest(orderId, denyReason).Execute(Api.Client);
             if (result.Status == 200)
             {
                 response = result.Data;
@@ -144,7 +143,7 @@ namespace Reggora.Api.Storage.Vendor
             return response;
         }
 
-        public string VendorCancelOrder(string orderId, string message)
+        public string VendorCancelOrder(string orderId, string message = "")
         {
             string response = null;
             var result = new CancelVendorOrderRequest(orderId, message).Execute(Api.Client);
